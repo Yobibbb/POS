@@ -23,12 +23,16 @@ for /f "tokens=5" %%a in ('netstat -aon ^| findstr ":3001 " ^| findstr "LISTENIN
 timeout /t 1 /nobreak >nul
 
 echo [1/2] Starting Local Server on port 3000...
-start "CartAlogue Local Server" /d "%SERVER_DIR%" cmd /k "node --experimental-sqlite server.js"
+pushd "%SERVER_DIR%"
+start "CartAlogue Local Server" cmd /k "node --experimental-sqlite server.js"
+popd
 
 timeout /t 3 /nobreak >nul
 
 echo [2/2] Starting POS (Next.js) on port 3001...
-start "CartAlogue POS" /d "%POS_DIR%" cmd /k "npx next dev -p 3001"
+pushd "%POS_DIR%"
+start "CartAlogue POS" cmd /k "npx next dev -p 3001"
+popd
 
 echo.
 echo Waiting for services to initialize...
