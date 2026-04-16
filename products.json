@@ -1,0 +1,536 @@
+{
+  "documents": [
+    {
+      "name": "projects/cartalogue-8bef8/databases/(default)/documents/products/4800014101016",
+      "fields": {
+        "unitPrice": {
+          "integerValue": "5800"
+        },
+        "category": {
+          "stringValue": "Personal Care"
+        },
+        "name": {
+          "stringValue": "Safeguard White Bar Soap 135g"
+        },
+        "brand": {
+          "stringValue": ""
+        },
+        "id": {
+          "stringValue": "PRODUCT-0010"
+        },
+        "barcode": {
+          "stringValue": "4800014101016"
+        },
+        "isActive": {
+          "booleanValue": true
+        }
+      },
+      "createTime": "2026-03-28T14:21:17.222283Z",
+      "updateTime": "2026-03-28T14:21:17.222283Z"
+    },
+    {
+      "name": "projects/cartalogue-8bef8/databases/(default)/documents/products/4800016013025",
+      "fields": {
+        "id": {
+          "stringValue": "PRODUCT-0003"
+        },
+        "brand": {
+          "stringValue": ""
+        },
+        "name": {
+          "stringValue": "Sky Flakes Crackers 250g"
+        },
+        "isActive": {
+          "booleanValue": true
+        },
+        "barcode": {
+          "stringValue": "4800016013025"
+        },
+        "unitPrice": {
+          "integerValue": "3500"
+        },
+        "category": {
+          "stringValue": "Biscuits & Crackers"
+        }
+      },
+      "createTime": "2026-03-28T14:21:17.222283Z",
+      "updateTime": "2026-03-28T14:21:17.222283Z"
+    },
+    {
+      "name": "projects/cartalogue-8bef8/databases/(default)/documents/products/4800016034808",
+      "fields": {
+        "unitPrice": {
+          "integerValue": "1800"
+        },
+        "category": {
+          "stringValue": "Biscuits & Crackers"
+        },
+        "id": {
+          "stringValue": "PRODUCT-0004"
+        },
+        "brand": {
+          "stringValue": ""
+        },
+        "name": {
+          "stringValue": "SkyFlakes Cream Crackers 100g"
+        },
+        "isActive": {
+          "booleanValue": true
+        },
+        "barcode": {
+          "stringValue": "4800016034808"
+        }
+      },
+      "createTime": "2026-03-28T14:21:17.222283Z",
+      "updateTime": "2026-03-28T14:21:17.222283Z"
+    },
+    {
+      "name": "projects/cartalogue-8bef8/databases/(default)/documents/products/4800033280037",
+      "fields": {
+        "id": {
+          "stringValue": "PRODUCT-0008"
+        },
+        "brand": {
+          "stringValue": ""
+        },
+        "name": {
+          "stringValue": "Milo Activ-Go 300g"
+        },
+        "isActive": {
+          "booleanValue": true
+        },
+        "barcode": {
+          "stringValue": "4800033280037"
+        },
+        "unitPrice": {
+          "integerValue": "13500"
+        },
+        "category": {
+          "stringValue": "Powdered Beverages"
+        }
+      },
+      "createTime": "2026-03-28T14:21:17.222283Z",
+      "updateTime": "2026-03-28T14:21:17.222283Z"
+    },
+    {
+      "name": "projects/cartalogue-8bef8/databases/(default)/documents/products/4800055122125",
+      "fields": {
+        "unitPrice": {
+          "integerValue": "15000"
+        },
+        "category": {
+          "stringValue": "Powdered Beverages"
+        },
+        "isActive": {
+          "booleanValue": true
+        },
+        "barcode": {
+          "stringValue": "4800055122125"
+        },
+        "id": {
+          "stringValue": "PRODUCT-0009"
+        },
+        "name": {
+          "stringValue": "Bear Brand Adult Plus 300g"
+        },
+        "brand": {
+          "stringValue": ""
+        }
+      },
+      "createTime": "2026-03-28T14:21:17.222283Z",
+      "updateTime": "2026-03-28T14:21:17.222283Z"
+    },
+    {
+      "name": "projects/cartalogue-8bef8/databases/(default)/documents/products/4800112501032",
+      "fields": {
+        "unitPrice": {
+          "integerValue": "9500"
+        },
+        "category": {
+          "stringValue": "Condiments & Cooking"
+        },
+        "isActive": {
+          "booleanValue": true
+        },
+        "barcode": {
+          "stringValue": "4800112501032"
+        },
+        "id": {
+          "stringValue": "PRODUCT-0013"
+        },
+        "name": {
+          "stringValue": "Lady's Choice Real Mayonnaise 220ml"
+        },
+        "brand": {
+          "stringValue": ""
+        }
+      },
+      "createTime": "2026-03-28T14:21:17.222283Z",
+      "updateTime": "2026-03-28T14:21:17.222283Z"
+    },
+    {
+      "name": "projects/cartalogue-8bef8/databases/(default)/documents/products/4800116461038",
+      "fields": {
+        "unitPrice": {
+          "integerValue": "2200"
+        },
+        "category": {
+          "stringValue": "Beverages"
+        },
+        "isActive": {
+          "booleanValue": true
+        },
+        "barcode": {
+          "stringValue": "4800116461038"
+        },
+        "id": {
+          "stringValue": "PRODUCT-0006"
+        },
+        "brand": {
+          "stringValue": ""
+        },
+        "name": {
+          "stringValue": "C2 Cool & Clean Apple 500ml"
+        }
+      },
+      "createTime": "2026-03-28T14:21:17.222283Z",
+      "updateTime": "2026-03-28T14:21:17.222283Z"
+    },
+    {
+      "name": "projects/cartalogue-8bef8/databases/(default)/documents/products/4800116461052",
+      "fields": {
+        "unitPrice": {
+          "integerValue": "2200"
+        },
+        "category": {
+          "stringValue": "Beverages"
+        },
+        "brand": {
+          "stringValue": ""
+        },
+        "name": {
+          "stringValue": "C2 Cool & Clean Green Tea 500ml"
+        },
+        "id": {
+          "stringValue": "PRODUCT-0007"
+        },
+        "barcode": {
+          "stringValue": "4800116461052"
+        },
+        "isActive": {
+          "booleanValue": true
+        }
+      },
+      "createTime": "2026-03-28T14:21:17.222283Z",
+      "updateTime": "2026-03-28T14:21:17.222283Z"
+    },
+    {
+      "name": "projects/cartalogue-8bef8/databases/(default)/documents/products/4800156000048",
+      "fields": {
+        "unitPrice": {
+          "integerValue": "4500"
+        },
+        "category": {
+          "stringValue": "Condiments & Cooking"
+        },
+        "isActive": {
+          "booleanValue": true
+        },
+        "barcode": {
+          "stringValue": "4800156000048"
+        },
+        "id": {
+          "stringValue": "PRODUCT-0015"
+        },
+        "name": {
+          "stringValue": "UFC Banana Ketchup 320g"
+        },
+        "brand": {
+          "stringValue": ""
+        }
+      },
+      "createTime": "2026-03-28T14:21:17.222283Z",
+      "updateTime": "2026-03-28T14:21:17.222283Z"
+    },
+    {
+      "name": "projects/cartalogue-8bef8/databases/(default)/documents/products/4800888301036",
+      "fields": {
+        "unitPrice": {
+          "integerValue": "3800"
+        },
+        "category": {
+          "stringValue": "Condiments & Cooking"
+        },
+        "id": {
+          "stringValue": "PRODUCT-0014"
+        },
+        "brand": {
+          "stringValue": ""
+        },
+        "name": {
+          "stringValue": "Silver Swan Soy Sauce 350ml"
+        },
+        "isActive": {
+          "booleanValue": true
+        },
+        "barcode": {
+          "stringValue": "4800888301036"
+        }
+      },
+      "createTime": "2026-03-28T14:21:17.222283Z",
+      "updateTime": "2026-03-28T14:21:17.222283Z"
+    },
+    {
+      "name": "projects/cartalogue-8bef8/databases/(default)/documents/products/6901028098518",
+      "fields": {
+        "id": {
+          "stringValue": "PRODUCT-0011"
+        },
+        "name": {
+          "stringValue": "Kopiko Black Instant Coffee 10s"
+        },
+        "brand": {
+          "stringValue": ""
+        },
+        "isActive": {
+          "booleanValue": true
+        },
+        "barcode": {
+          "stringValue": "6901028098518"
+        },
+        "unitPrice": {
+          "integerValue": "7500"
+        },
+        "category": {
+          "stringValue": "Coffee"
+        }
+      },
+      "createTime": "2026-03-28T14:21:17.222283Z",
+      "updateTime": "2026-03-28T14:21:17.222283Z"
+    },
+    {
+      "name": "projects/cartalogue-8bef8/databases/(default)/documents/products/8850140000055",
+      "fields": {
+        "unitPrice": {
+          "integerValue": "1200"
+        },
+        "category": {
+          "stringValue": "Condiments & Cooking"
+        },
+        "isActive": {
+          "booleanValue": true
+        },
+        "barcode": {
+          "stringValue": "8850140000055"
+        },
+        "id": {
+          "stringValue": "PRODUCT-0012"
+        },
+        "brand": {
+          "stringValue": ""
+        },
+        "name": {
+          "stringValue": "Mama Sita's Adobo Mix 25g"
+        }
+      },
+      "createTime": "2026-03-28T14:21:17.222283Z",
+      "updateTime": "2026-03-28T14:21:17.222283Z"
+    },
+    {
+      "name": "projects/cartalogue-8bef8/databases/(default)/documents/products/8850461034028",
+      "fields": {
+        "unitPrice": {
+          "integerValue": "4200"
+        },
+        "category": {
+          "stringValue": "Snacks"
+        },
+        "id": {
+          "stringValue": "PRODUCT-0005"
+        },
+        "name": {
+          "stringValue": "Chippy Barbecue Corn Chips 110g"
+        },
+        "brand": {
+          "stringValue": ""
+        },
+        "isActive": {
+          "booleanValue": true
+        },
+        "barcode": {
+          "stringValue": "8850461034028"
+        }
+      },
+      "createTime": "2026-03-28T14:21:17.222283Z",
+      "updateTime": "2026-03-28T14:21:17.222283Z"
+    },
+    {
+      "name": "projects/cartalogue-8bef8/databases/(default)/documents/products/8850999032273",
+      "fields": {
+        "name": {
+          "stringValue": "Lucky Me Pancit Canton Original"
+        },
+        "brand": {
+          "stringValue": ""
+        },
+        "id": {
+          "stringValue": "PRODUCT-0001"
+        },
+        "barcode": {
+          "stringValue": "8850999032273"
+        },
+        "isActive": {
+          "booleanValue": true
+        },
+        "unitPrice": {
+          "integerValue": "1500"
+        },
+        "category": {
+          "stringValue": "Instant Noodles"
+        }
+      },
+      "createTime": "2026-03-28T14:21:17.222283Z",
+      "updateTime": "2026-03-28T14:21:17.222283Z"
+    },
+    {
+      "name": "projects/cartalogue-8bef8/databases/(default)/documents/products/8850999032280",
+      "fields": {
+        "unitPrice": {
+          "integerValue": "1500"
+        },
+        "category": {
+          "stringValue": "Instant Noodles"
+        },
+        "name": {
+          "stringValue": "Lucky Me Pancit Canton Chili Mansi"
+        },
+        "brand": {
+          "stringValue": ""
+        },
+        "id": {
+          "stringValue": "PRODUCT-0002"
+        },
+        "barcode": {
+          "stringValue": "8850999032280"
+        },
+        "isActive": {
+          "booleanValue": true
+        }
+      },
+      "createTime": "2026-03-28T14:21:17.222283Z",
+      "updateTime": "2026-03-28T14:21:17.222283Z"
+    },
+    {
+      "name": "projects/cartalogue-8bef8/databases/(default)/documents/products/8888888000001",
+      "fields": {
+        "unitPrice": {
+          "integerValue": "2500"
+        },
+        "category": {
+          "stringValue": "Test"
+        },
+        "id": {
+          "stringValue": "PRODUCT-0016"
+        },
+        "brand": {
+          "stringValue": ""
+        },
+        "name": {
+          "stringValue": "Test Product Alpha 50g"
+        },
+        "isActive": {
+          "booleanValue": true
+        },
+        "barcode": {
+          "stringValue": "8888888000001"
+        }
+      },
+      "createTime": "2026-03-28T14:21:17.222283Z",
+      "updateTime": "2026-03-28T14:21:17.222283Z"
+    },
+    {
+      "name": "projects/cartalogue-8bef8/databases/(default)/documents/products/8888888000002",
+      "fields": {
+        "id": {
+          "stringValue": "PRODUCT-0017"
+        },
+        "name": {
+          "stringValue": "Test Product Beta 100g"
+        },
+        "brand": {
+          "stringValue": ""
+        },
+        "isActive": {
+          "booleanValue": true
+        },
+        "barcode": {
+          "stringValue": "8888888000002"
+        },
+        "unitPrice": {
+          "integerValue": "5000"
+        },
+        "category": {
+          "stringValue": "Test"
+        }
+      },
+      "createTime": "2026-03-28T14:21:17.222283Z",
+      "updateTime": "2026-03-28T14:21:17.222283Z"
+    },
+    {
+      "name": "projects/cartalogue-8bef8/databases/(default)/documents/products/8888888000003",
+      "fields": {
+        "unitPrice": {
+          "integerValue": "9900"
+        },
+        "category": {
+          "stringValue": "Test"
+        },
+        "id": {
+          "stringValue": "PRODUCT-0018"
+        },
+        "brand": {
+          "stringValue": ""
+        },
+        "name": {
+          "stringValue": "Test Product Gamma 250g"
+        },
+        "isActive": {
+          "booleanValue": true
+        },
+        "barcode": {
+          "stringValue": "8888888000003"
+        }
+      },
+      "createTime": "2026-03-28T14:21:17.222283Z",
+      "updateTime": "2026-03-28T14:21:17.222283Z"
+    },
+    {
+      "name": "projects/cartalogue-8bef8/databases/(default)/documents/products/VkQzgvV74axQPZSuDbgq",
+      "fields": {
+        "category": {
+          "stringValue": "Instant Spagetti"
+        },
+        "unitPrice": {
+          "integerValue": "1500"
+        },
+        "id": {
+          "stringValue": "PRODUCT-0050"
+        },
+        "brand": {
+          "stringValue": "Nissin"
+        },
+        "name": {
+          "stringValue": "Pasta Express"
+        },
+        "isActive": {
+          "booleanValue": true
+        },
+        "barcode": {
+          "stringValue": "4800016560392"
+        }
+      },
+      "createTime": "2026-04-11T16:38:54.139226Z",
+      "updateTime": "2026-04-11T19:34:04.461302Z"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "name": "cartalogue-local-server",
+  "version": "1.0.0",
+  "description": "CartAlogue offline demo server — SQLite + Express + Socket.io",
+  "main": "server.js",
+  "scripts": {
+    "start": "node --experimental-sqlite server.js",
+    "dev": "node --experimental-sqlite --watch server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.3",
+    "socket.io": "^4.7.4",
+    "uuid": "^9.0.1"
+  }
+}

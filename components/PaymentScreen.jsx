@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import ModeIndicatorBadge from '@/components/ModeIndicatorBadge';
 
 export default function PaymentScreen({ 
   transaction, 
@@ -54,7 +55,8 @@ export default function PaymentScreen({
               <span className="font-mono">Basket:</span> <span className="font-bold text-pos-primary">{transaction.basketId}</span>
             </div>
           </div>
-          <div className="text-right">
+          <div className="flex items-center gap-3">
+            <ModeIndicatorBadge />
             <div className="bg-yellow-500 px-4 py-2 rounded font-bold text-black">
               CASH ONLY
             </div>

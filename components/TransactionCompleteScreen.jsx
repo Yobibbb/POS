@@ -1,5 +1,7 @@
 'use client';
 
+import ModeIndicatorBadge from '@/components/ModeIndicatorBadge';
+
 export default function TransactionCompleteScreen({ 
   transaction, 
   onNextCustomer 
@@ -19,7 +21,8 @@ export default function TransactionCompleteScreen({
               <span className="font-mono">Receipt:</span> <span className="font-bold text-pos-primary">{transaction.receiptNumber}</span>
             </div>
           </div>
-          <div className="text-right">
+          <div className="flex items-center gap-3">
+            <ModeIndicatorBadge />
             <div className="bg-pos-success px-4 py-2 rounded font-bold text-white animate-pulse">
               SUCCESS
             </div>
