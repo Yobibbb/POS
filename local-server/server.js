@@ -93,6 +93,12 @@ db.exec(`
     cashier_id    TEXT DEFAULT '',
     completed_at  TEXT NOT NULL
   );
+
+  CREATE TABLE IF NOT EXISTS baskets (
+    basket_id          TEXT PRIMARY KEY,
+    status             TEXT DEFAULT 'available',
+    current_session_id TEXT DEFAULT NULL
+  );
 `);
 
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -114,6 +120,23 @@ function withTransaction(fn) {
 // Seed products (runs only once â€” skips if products table already populated)
 // unitPrice from Firebase was in centavos â†’ already converted to pesos here
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+// Seed baskets (runs only once — skips if baskets table already populated)
+const basketCountRow = db.prepare('SELECT COUNT(*) as count FROM baskets').get();
+
+if (basketCountRow.count === 0) {
+  const insertBasket = db.prepare(
+    "INSERT OR IGNORE INTO baskets (basket_id, status) VALUES (:basketId, 'available')"
+  );
+  withTransaction(() => {
+    for (let i = 1; i <= 8; i++) {
+      insertBasket.run({ basketId: `BASKET-${String(i).padStart(3, '0')}` });
+    }
+  });
+  console.log('[DB] Seeded 8 baskets (BASKET-001 through BASKET-008).');
+} else {
+  console.log(`[DB] Baskets table has ${basketCountRow.count} records — skipping seed.`);
+}
 
 const productCountRow = db.prepare('SELECT COUNT(*) as count FROM products').get();
 
@@ -194,6 +217,14 @@ function fmtSessionFull(s, items) {
   };
 }
 
+function fmtBasket(b) {
+  return {
+    basketId: b.basket_id,
+    status: b.status,
+    currentSessionId: b.current_session_id || null,
+  };
+}
+
 function fmtTransaction(t) {
   return {
     sessionId: t.session_id,
@@ -213,6 +244,22 @@ function fmtTransaction(t) {
 
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', server: 'CartAlogue Local Server', timestamp: new Date().toISOString() });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Routes — Baskets
+// ─────────────────────────────────────────────────────────────────────────────
+
+app.get('/baskets', (req, res) => {
+  const rows = db.prepare('SELECT * FROM baskets ORDER BY basket_id').all();
+  res.json(rows.map(fmtBasket));
+});
+
+app.get('/baskets/:basketId', (req, res) => {
+  const row = db.prepare('SELECT * FROM baskets WHERE basket_id = :id')
+    .get({ id: req.params.basketId });
+  if (!row) return res.status(404).json({ error: 'Basket not found' });
+  res.json(fmtBasket(row));
 });
 
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -235,6 +282,83 @@ app.get('/products/barcode/:barcode', (req, res) => {
 // Routes â€” Sessions
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
+app.get('/sessions/active/first', (req, res) => {
+  const row = db.prepare(
+    "SELECT * FROM sessions WHERE status = 'active' ORDER BY started_at DESC LIMIT 1"
+  ).get();
+  if (!row) return res.status(404).json({ error: 'No active session' });
+  res.json(fmtSessionBase(row));
+});
+
+// ESP32 scan endpoint — called by the basket hardware in Local Mode
+// POST /sessions/:sessionId/scan  { barcode, action: "added"|"removed", basketId }
+app.post('/sessions/:sessionId/scan', (req, res) => {
+  const { barcode, action, basketId } = req.body;
+  const { sessionId } = req.params;
+
+  if (!barcode || !action) return res.status(400).json({ error: 'barcode and action are required' });
+
+  const session = db.prepare("SELECT * FROM sessions WHERE session_id = :id AND status = 'active'")
+    .get({ id: sessionId });
+  if (!session) return res.status(404).json({ error: 'Session not found or not active' });
+
+  const product = db.prepare('SELECT * FROM products WHERE barcode = :barcode AND is_active = 1')
+    .get({ barcode });
+  if (!product) return res.status(404).json({ error: 'Product not found', barcode });
+
+  const existing = db.prepare('SELECT * FROM session_items WHERE session_id = :sid AND barcode = :bc')
+    .get({ sid: sessionId, bc: barcode });
+
+  if (action === 'added') {
+    if (existing) {
+      const newQty = existing.quantity + 1;
+      const newSub = parseFloat((product.unit_price * newQty).toFixed(2));
+      db.prepare('UPDATE session_items SET quantity = :qty, subtotal = :sub WHERE session_id = :sid AND barcode = :bc')
+        .run({ qty: newQty, sub: newSub, sid: sessionId, bc: barcode });
+    } else {
+      db.prepare('INSERT INTO session_items (session_id, barcode, product_name, unit_price, quantity, subtotal) VALUES (:sid, :bc, :name, :price, 1, :price)')
+        .run({ sid: sessionId, bc: barcode, name: product.name, price: product.unit_price });
+    }
+  } else if (action === 'removed') {
+    if (existing) {
+      if (existing.quantity <= 1) {
+        db.prepare('DELETE FROM session_items WHERE session_id = :sid AND barcode = :bc')
+          .run({ sid: sessionId, bc: barcode });
+      } else {
+        const newQty = existing.quantity - 1;
+        const newSub = parseFloat((product.unit_price * newQty).toFixed(2));
+        db.prepare('UPDATE session_items SET quantity = :qty, subtotal = :sub WHERE session_id = :sid AND barcode = :bc')
+          .run({ qty: newQty, sub: newSub, sid: sessionId, bc: barcode });
+      }
+    }
+  }
+
+  const totalRow = db.prepare('SELECT SUM(subtotal) as total FROM session_items WHERE session_id = :id')
+    .get({ id: sessionId });
+  const runningTotal = parseFloat((totalRow.total || 0).toFixed(2));
+  db.prepare('UPDATE sessions SET running_total = :total WHERE session_id = :id')
+    .run({ total: runningTotal, id: sessionId });
+
+  const item = db.prepare('SELECT * FROM session_items WHERE session_id = :sid AND barcode = :bc')
+    .get({ sid: sessionId, bc: barcode });
+
+  const eventData = {
+    sessionId,
+    barcode,
+    product_name: product.name,
+    unit_price: product.unit_price,
+    quantity: item ? item.quantity : 0,
+    subtotal: item ? item.subtotal : 0,
+    running_total: runningTotal,
+    basketId: basketId || 'BASKET-001',
+    timestamp: new Date().toISOString(),
+  };
+
+  io.to(sessionId).emit(action === 'added' ? 'item_added' : 'item_removed', eventData);
+  console.log(`[ESP32 Scan] ${action.toUpperCase()} barcode:${barcode} product:"${product.name}" session:${sessionId}`);
+  res.json({ success: true, ...eventData });
+});
+
 app.get('/sessions/active', (req, res) => {
   const rows = db.prepare(
     "SELECT * FROM sessions WHERE status IN ('active','checkout_pending') ORDER BY started_at DESC"
@@ -251,14 +375,76 @@ app.get('/sessions/:sessionId', (req, res) => {
   res.json(fmtSessionFull(session, items));
 });
 
+app.get('/baskets/:basketId/session', (req, res) => {
+  const { basketId } = req.params;
+
+  // First check the baskets table for a pinned session
+  const basket = db.prepare('SELECT * FROM baskets WHERE basket_id = :id').get({ id: basketId });
+  if (basket && basket.current_session_id) {
+    const session = db.prepare("SELECT * FROM sessions WHERE session_id = :id AND status IN ('active','checkout_pending')")
+      .get({ id: basket.current_session_id });
+    if (session) return res.json({ sessionId: session.session_id });
+  }
+
+  // Fallback: scan paired_baskets JSON in active sessions
+  const rows = db.prepare("SELECT * FROM sessions WHERE status = 'active' ORDER BY started_at DESC").all();
+  for (const row of rows) {
+    try {
+      const baskets = JSON.parse(row.paired_baskets || '[]');
+      if (baskets.includes(basketId)) {
+        return res.json({ sessionId: row.session_id });
+      }
+    } catch (_) { /* skip malformed row */ }
+  }
+  return res.status(404).json({ error: 'No active session for this basket' });
+});
+
 app.post('/sessions', (req, res) => {
-  const { deviceId } = req.body;
+  const { deviceId, basketId } = req.body;
   if (!deviceId) return res.status(400).json({ error: 'deviceId is required' });
   const sessionId = uuidv4();
+  const pairedBaskets = basketId ? JSON.stringify([basketId]) : '[]';
   db.prepare(
-    "INSERT INTO sessions (session_id, device_id, status, started_at) VALUES (:sessionId, :deviceId, 'active', :startedAt)"
-  ).run({ sessionId, deviceId, startedAt: new Date().toISOString() });
+    "INSERT INTO sessions (session_id, device_id, status, started_at, paired_baskets) VALUES (:sessionId, :deviceId, 'active', :startedAt, :pairedBaskets)"
+  ).run({ sessionId, deviceId, startedAt: new Date().toISOString(), pairedBaskets });
+
+  // Mark basket as in_use if one was provided
+  if (basketId) {
+    db.prepare("UPDATE baskets SET status = 'in_use', current_session_id = :sid WHERE basket_id = :bid")
+      .run({ sid: sessionId, bid: basketId });
+  }
+
   res.json({ sessionId });
+});
+
+app.post('/sessions/:sessionId/checkout/request', (req, res) => {
+  const { sessionId } = req.params;
+  const { checkoutCode, items, total } = req.body;
+  if (!checkoutCode) return res.status(400).json({ error: 'checkoutCode is required' });
+
+  const session = db.prepare('SELECT 1 FROM sessions WHERE session_id = :id').get({ id: sessionId });
+  if (!session) return res.status(404).json({ error: 'Session not found' });
+
+  const normalized = checkoutCode.toUpperCase();
+  db.prepare(`
+    INSERT OR REPLACE INTO checkout_codes
+      (checkout_code, session_id, status, items, total, created_at)
+    VALUES (:checkoutCode, :sessionId, 'pending', :items, :total, :createdAt)
+  `).run({
+    checkoutCode: normalized,
+    sessionId,
+    items: JSON.stringify(items || []),
+    total: total || 0,
+    createdAt: new Date().toISOString(),
+  });
+
+  db.prepare("UPDATE sessions SET status = 'checkout_pending' WHERE session_id = :id")
+    .run({ id: sessionId });
+
+  const payload = { sessionId, checkoutCode: normalized, items: items || [], total: total || 0 };
+  io.emit('checkout_requested', payload);
+  console.log(`[Checkout] REST checkout/request — code: ${normalized}, session: ${sessionId}`);
+  res.json({ success: true, checkoutCode: normalized });
 });
 
 app.patch('/sessions/:sessionId/end', (req, res) => {
@@ -267,6 +453,11 @@ app.patch('/sessions/:sessionId/end', (req, res) => {
   if (!session) return res.status(404).json({ error: 'Session not found' });
   db.prepare("UPDATE sessions SET status = 'completed' WHERE session_id = :id")
     .run({ id: req.params.sessionId });
+
+  // Free any basket that was pinned to this session
+  db.prepare("UPDATE baskets SET status = 'available', current_session_id = NULL WHERE current_session_id = :sid")
+    .run({ sid: req.params.sessionId });
+
   io.to(req.params.sessionId).emit('session_ended', { sessionId: req.params.sessionId });
   res.json({ success: true });
 });
@@ -336,6 +527,10 @@ app.patch('/checkout/:checkoutCode/complete', (req, res) => {
       .run({ id: code.session_id });
     db.prepare("UPDATE checkout_codes SET status = 'completed' WHERE checkout_code = :code")
       .run({ code: normalized });
+
+    // Free any basket that was pinned to this session
+    db.prepare("UPDATE baskets SET status = 'available', current_session_id = NULL WHERE current_session_id = :sid")
+      .run({ sid: code.session_id });
   });
 
   const receipt = {
@@ -393,26 +588,37 @@ io.on('connection', (socket) => {
 
     const normalized = checkoutCode.toUpperCase();
 
-    db.prepare(`
-      INSERT OR REPLACE INTO checkout_codes
-        (checkout_code, session_id, status, items, total, created_at)
-      VALUES (:checkoutCode, :sessionId, 'pending', :items, :total, :createdAt)
-    `).run({
-      checkoutCode: normalized,
-      sessionId,
-      items: JSON.stringify(items || []),
-      total: total || 0,
-      createdAt: new Date().toISOString(),
-    });
+    try {
+      // Temporarily disable FK enforcement so an orphaned/stale sessionId
+      // (e.g. after a server restart) never blocks storing the checkout code.
+      db.exec('PRAGMA foreign_keys = OFF');
+      db.prepare(`
+        INSERT OR REPLACE INTO checkout_codes
+          (checkout_code, session_id, status, items, total, created_at)
+        VALUES (:checkoutCode, :sessionId, 'pending', :items, :total, :createdAt)
+      `).run({
+        checkoutCode: normalized,
+        sessionId,
+        items: JSON.stringify(items || []),
+        total: total || 0,
+        createdAt: new Date().toISOString(),
+      });
+      db.exec('PRAGMA foreign_keys = ON');
 
-    db.prepare("UPDATE sessions SET status = 'checkout_pending' WHERE session_id = :id")
-      .run({ id: sessionId });
+      db.prepare("UPDATE sessions SET status = 'checkout_pending' WHERE session_id = :id")
+        .run({ id: sessionId });
+    } catch (err) {
+      db.exec('PRAGMA foreign_keys = ON');
+      console.error(`[Checkout] Failed to store checkout code ${normalized}:`, err.message);
+      return;
+    }
 
     const payload = { sessionId, checkoutCode: normalized, items: items || [], total: total || 0 };
 
     // Broadcast to ALL sockets so POS always receives it even before joining the room
     io.emit('checkout_requested', payload);
-    console.log(`[Checkout] Broadcasted checkout_requested â€” code: ${normalized}, session: ${sessionId}`);
+    console.log(`[Checkout] Broadcasted checkout_requested - code: ${normalized}, session: ${sessionId}`);
+
   });
 
   // Flutter app emits when a barcode is scanned into basket

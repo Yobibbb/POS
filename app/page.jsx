@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useMode } from '@/lib/ModeContext';
 import IdleScreen from '@/components/IdleScreen';
 import TransactionReviewScreen from '@/components/TransactionReviewScreen';
@@ -14,18 +14,6 @@ export default function Home() {
   const [transaction, setTransaction] = useState(null);
   const [scanError, setScanError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-
-  // Local Mode: listen for incoming checkout_requested Socket.io events.
-  // When the customer's app sends a checkout request, auto-navigate to review.
-  useEffect(() => {
-    if (!service) return;
-    const unsubscribe = service.listenForCheckoutRequests((incomingTxn) => {
-      setTransaction(incomingTxn);
-      setCurrentScreen('review');
-      setScanError(null);
-    });
-    return unsubscribe;
-  }, [service]);
 
   // Cashier manually scans / types the checkout code
   const handleScanCode = async (checkoutCode) => {
