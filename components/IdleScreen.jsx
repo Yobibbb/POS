@@ -157,7 +157,6 @@ export default function IdleScreen({ onScanCode, isLoading, scanError }) {
                 disabled={isLoading}
                 placeholder="Scan barcode or type basket ID..."
                 className="flex-1 border-2 border-gray-300 rounded-lg px-4 py-3 text-lg font-mono focus:outline-none focus:border-pos-primary disabled:opacity-50 disabled:cursor-wait"
-                autoFocus
               />
               <button
                 onClick={() => {

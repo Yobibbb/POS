@@ -26,7 +26,7 @@ export default function SettingsPage() {
     setPingState('testing');
     setPingMessage('');
     try {
-      const res = await fetch(`${url}/products`, { signal: AbortSignal.timeout(5000) });
+      const res = await fetch(`${url}/health`, { signal: AbortSignal.timeout(5000) });
       if (res.ok) {
         setPingState('ok');
         setPingMessage(`Connected! Server at ${url} is reachable.`);
@@ -142,7 +142,7 @@ export default function SettingsPage() {
                 type="text"
                 value={localUrl}
                 onChange={(e) => setLocalUrl(e.target.value)}
-                placeholder="http://192.168.1.100:3000"
+                placeholder="http://192.168.43.128:3000"
                 className="flex-1 border-2 border-gray-300 rounded-lg px-4 py-3 font-mono text-sm focus:outline-none focus:border-pos-primary"
               />
               <button

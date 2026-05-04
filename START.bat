@@ -2,8 +2,8 @@
 title CartAlogue POS - Launcher
 color 0A
 
-set "SERVER_DIR=%~dp0local-server"
-set "POS_DIR=%~dp0POS"
+set "SERVER_DIR=C:\xampp\htdocs\CARTALOUGE APP"
+set "POS_DIR=%~dp0"
 
 echo ============================================
 echo  CartAlogue POS - Starting Services...
@@ -22,9 +22,9 @@ for /f "tokens=5" %%a in ('netstat -aon ^| findstr ":3001 " ^| findstr "LISTENIN
 
 timeout /t 1 /nobreak >nul
 
-echo [1/2] Starting Local Server on port 3000...
+echo [1/2] Starting CartAlogue App Server on port 3000...
 pushd "%SERVER_DIR%"
-start "CartAlogue Local Server" cmd /k "node --experimental-sqlite server.js"
+start "CartAlogue App Server" cmd /k "node server.js"
 popd
 
 timeout /t 3 /nobreak >nul
@@ -35,9 +35,18 @@ start "CartAlogue POS" cmd /k "npx next dev -p 3001"
 popd
 
 echo.
-echo Waiting for services to initialize...
-timeout /t 15 /nobreak >nul
+echo Waiting for POS to be ready (this may take up to 60 seconds)...
+set /a _wait=0
+:wait_loop
+timeout /t 2 /nobreak >nul
+set /a _wait+=2
+powershell -NoProfile -Command "try { $r = Invoke-WebRequest -Uri 'http://localhost:3001' -UseBasicParsing -TimeoutSec 2 -ErrorAction Stop; exit 0 } catch { exit 1 }" >nul 2>&1
+if %errorlevel%==0 goto ready
+if %_wait% GEQ 90 goto ready
+echo  Still waiting... (%_wait%s)
+goto wait_loop
 
+:ready
 echo.
 echo ============================================
 echo  Service Status Check:
