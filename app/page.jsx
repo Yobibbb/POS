@@ -6,9 +6,10 @@ import IdleScreen from '@/components/IdleScreen';
 import TransactionReviewScreen from '@/components/TransactionReviewScreen';
 import PaymentScreen from '@/components/PaymentScreen';
 import TransactionCompleteScreen from '@/components/TransactionCompleteScreen';
+import { saveHistoryEntry } from '@/lib/services/HistoryService';
 
 export default function Home() {
-  const { service } = useMode();
+  const { service, config } = useMode();
 
   const [currentScreen, setCurrentScreen] = useState('idle');
   const [transaction, setTransaction] = useState(null);
@@ -55,6 +56,9 @@ export default function Home() {
     // Show receipt immediately — same UX in both Online and Local modes
     setTransaction(completedTransaction);
     setCurrentScreen('complete');
+
+    // Save to local history for the History page (and future sync)
+    saveHistoryEntry(completedTransaction, config.mode);
 
     // Write to backend in background (Firebase or local server)
     service.completeCheckout(completedTransaction, amountReceived).catch((err) => {

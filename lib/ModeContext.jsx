@@ -10,6 +10,7 @@ import {
 import { getConfig, saveConfig } from '@/lib/config';
 import { FirebaseCheckoutService } from '@/lib/services/FirebaseCheckoutService';
 import { LocalCheckoutService } from '@/lib/services/LocalCheckoutService';
+import { useSyncHistory } from '@/lib/useSyncHistory';
 
 const ModeContext = createContext(null);
 
@@ -21,6 +22,9 @@ export function ModeProvider({ children }) {
   const [isClient, setIsClient] = useState(false);
   const [service, setService] = useState(null);
   const serviceRef = useRef(null);
+
+  // Activate background sync: auto-syncs local history to Firebase on internet reconnect
+  useSyncHistory();
 
   // Hydrate config from localStorage once on client
   useEffect(() => {
