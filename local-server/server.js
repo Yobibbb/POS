@@ -6,7 +6,7 @@
  * Start: npm start   (or: node --experimental-sqlite server.js)
  * Default port: 3000  (set PORT env var to override)
  *
- * Uses Node.js built-in node:sqlite â€” no native compilation needed.
+ * Uses Node.js built-in node:sqlite – no native compilation needed.
  * Requires Node.js 22+.
  */
 
@@ -18,9 +18,9 @@ const { v4: uuidv4 } = require('uuid');
 const path = require('path');
 const cors = require('cors');
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 // Bootstrap
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 const PORT = process.env.PORT || 3000;
 
@@ -33,9 +33,9 @@ const io = new Server(httpServer, {
 app.use(cors());
 app.use(express.json());
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-// SQLite setup (built-in node:sqlite â€” no package required)
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+// SQLite setup (built-in node:sqlite – no package required)
+// ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 const db = new DatabaseSync(path.join(__dirname, 'cartalogue.db'));
 
@@ -101,9 +101,9 @@ db.exec(`
   );
 `);
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 // Transaction helper (node:sqlite has no built-in .transaction())
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 function withTransaction(fn) {
   db.exec('BEGIN');
@@ -116,10 +116,10 @@ function withTransaction(fn) {
   }
 }
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-// Seed products (runs only once â€” skips if products table already populated)
-// unitPrice from Firebase was in centavos â†’ already converted to pesos here
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+// Seed products (runs only once – skips if products table already populated)
+// unitPrice from Firebase was in centavos → already converted to pesos here
+// ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 // Seed baskets (runs only once — skips if baskets table already populated)
 const basketCountRow = db.prepare('SELECT COUNT(*) as count FROM baskets').get();
@@ -164,3 +164,201 @@ if (productCountRow.count === 0) {
 } else {
   console.log(`[DB] Products table has ${productCountRow.count} records - skipping seed.`);
 }
+
+// ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+// API Endpoints
+// ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+/**
+ * GET /checkout/:code
+ * Fetch checkout details for a specific checkout code.
+ */
+app.get('/checkout/:code', (req, res) => {
+  const code = req.params.code.toUpperCase();
+
+  try {
+    const checkoutRow = db
+      .prepare('SELECT * FROM checkout_codes WHERE checkout_code = ?')
+      .get(code);
+
+    if (!checkoutRow) {
+      return res.status(404).json({ error: `Checkout code "${code}" not found.` });
+    }
+
+    const sessionRow = db
+      .prepare('SELECT * FROM sessions WHERE session_id = ?')
+      .get(checkoutRow.session_id);
+
+    const itemRows = db
+      .prepare('SELECT * FROM session_items WHERE session_id = ?')
+      .all(checkoutRow.session_id);
+
+    const items = itemRows.map(row => ({
+      productName: row.product_name,
+      barcode: row.barcode,
+      quantity: row.quantity,
+      unitPrice: row.unit_price,
+      subtotal: row.subtotal,
+    }));
+
+    const total = items.reduce((sum, item) => sum + item.subtotal, 0);
+
+    res.json({
+      sessionId: checkoutRow.session_id,
+      checkoutCode: code,
+      status: checkoutRow.status,
+      items,
+      total,
+    });
+  } catch (err) {
+    console.error('[GET /checkout/:code]', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+/**
+ * POST /checkout
+ * Mark a checkout code as received / begin processing.
+ */
+app.post('/checkout', (req, res) => {
+  const { sessionId, checkoutCode } = req.body;
+
+  if (!sessionId || !checkoutCode) {
+    return res.status(400).json({ error: 'sessionId and checkoutCode required' });
+  }
+
+  try {
+    db.prepare(
+      'UPDATE checkout_codes SET status = ? WHERE checkout_code = ?'
+    ).run('received', checkoutCode.toUpperCase());
+
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('[POST /checkout]', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+/**
+ * PATCH /checkout/:code/complete
+ * Complete a payment: record the transaction and update checkout status.
+ */
+app.patch('/checkout/:code/complete', (req, res) => {
+  const code = req.params.code.toUpperCase();
+  const { cashierId, amountPaid } = req.body;
+
+  if (!cashierId || amountPaid === undefined) {
+    return res.status(400).json({ error: 'cashierId and amountPaid required' });
+  }
+
+  try {
+    withTransaction(() => {
+      // 1. Get the checkout code
+      const checkoutRow = db
+        .prepare('SELECT * FROM checkout_codes WHERE checkout_code = ?')
+        .get(code);
+
+      if (!checkoutRow) {
+        throw new Error(`Checkout code "${code}" not found.`);
+      }
+
+      const sessionId = checkoutRow.session_id;
+      const items = JSON.parse(checkoutRow.items || '[]');
+      const total = checkoutRow.total || 0;
+      const change = amountPaid - total;
+      const completedAt = new Date().toISOString();
+
+      // 2. Record transaction
+      db.prepare(`
+        INSERT OR REPLACE INTO transactions
+        (session_id, checkout_code, items, total, amount_paid, change_amount, cashier_id, completed_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      `).run(
+        sessionId,
+        code,
+        JSON.stringify(items),
+        total,
+        amountPaid,
+        change,
+        cashierId,
+        completedAt
+      );
+
+      // 3. Update checkout code status to completed
+      db.prepare(
+        'UPDATE checkout_codes SET status = ? WHERE checkout_code = ?'
+      ).run('completed', code);
+
+      // 4. Update session status to completed
+      db.prepare(
+        'UPDATE sessions SET status = ? WHERE session_id = ?'
+      ).run('completed', sessionId);
+    });
+
+    res.json({ ok: true, message: 'Payment recorded successfully.' });
+  } catch (err) {
+    console.error('[PATCH /checkout/:code/complete]', err);
+    res.status(500).json({ error: err.message || 'Server error' });
+  }
+});
+
+/**
+ * GET /transactions
+ * Fetch all completed transactions (for history/reporting).
+ */
+app.get('/transactions', (req, res) => {
+  try {
+    const rows = db
+      .prepare('SELECT * FROM transactions ORDER BY completed_at DESC LIMIT 100')
+      .all();
+
+    const transactions = rows.map(row => ({
+      sessionId: row.session_id,
+      checkoutCode: row.checkout_code,
+      items: JSON.parse(row.items || '[]'),
+      total: row.total,
+      amountPaid: row.amount_paid,
+      change: row.change_amount,
+      cashierId: row.cashier_id,
+      completedAt: row.completed_at,
+    }));
+
+    res.json(transactions);
+  } catch (err) {
+    console.error('[GET /transactions]', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+/**
+ * Socket.io event: client listening for push notifications from Flutter app.
+ * (Not required for POS but kept for potential future use)
+ */
+io.on('connection', (socket) => {
+  console.log('[Socket.io] Client connected:', socket.id);
+
+  /**
+   * Listen for checkout_complete events from POS
+   * and broadcast to all connected Flutter app clients
+   */
+  socket.on('checkout_complete', (data) => {
+    console.log('[Socket.io] Received checkout_complete from POS:', data.checkoutCode);
+    
+    // Broadcast to all connected clients (Flutter app)
+    io.emit('checkout_complete', data);
+    console.log('[Socket.io] Broadcasted checkout_complete to all clients');
+  });
+
+  socket.on('disconnect', () => {
+    console.log('[Socket.io] Client disconnected:', socket.id);
+  });
+});
+
+// ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+// Start Server
+// ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+httpServer.listen(PORT, () => {
+  console.log(`\n✓ CartAlogue Local Server running at http://localhost:${PORT}`);
+  console.log(`  Serving Flutter app (demo laptop hotspot) and POS UI\n`);
+});

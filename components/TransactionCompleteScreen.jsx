@@ -4,7 +4,8 @@ import ModeIndicatorBadge from '@/components/ModeIndicatorBadge';
 
 export default function TransactionCompleteScreen({ 
   transaction, 
-  onNextCustomer 
+  onNextCustomer,
+  syncError
 }) {
   const handlePrint = () => {
     window.print();
@@ -149,9 +150,15 @@ export default function TransactionCompleteScreen({
 
       {/* Bottom Status Bar */}
       <footer className="bg-white border-t-2 border-gray-300 px-6 py-3 shadow-inner">
-        <div className="text-center text-sm text-gray-600 font-mono">
-          Transaction completed successfully - Ready for next customer
-        </div>
+        {syncError ? (
+          <div className="text-center text-sm bg-red-100 border-2 border-red-500 text-red-800 font-semibold px-4 py-3 rounded">
+            ⚠️ Backend sync failed: {syncError}
+          </div>
+        ) : (
+          <div className="text-center text-sm text-gray-600 font-mono">
+            Transaction completed successfully - Ready for next customer
+          </div>
+        )}
       </footer>
     </div>
   );

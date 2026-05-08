@@ -15,6 +15,7 @@ export default function Home() {
   const [transaction, setTransaction] = useState(null);
   const [scanError, setScanError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [syncError, setSyncError] = useState(null);
 
   // Cashier manually scans / types the checkout code
   const handleScanCode = async (checkoutCode) => {
@@ -56,14 +57,21 @@ export default function Home() {
     // Show receipt immediately — same UX in both Online and Local modes
     setTransaction(completedTransaction);
     setCurrentScreen('complete');
+    setSyncError(null);
 
     // Save to local history for the History page (and future sync)
     saveHistoryEntry(completedTransaction, config.mode);
 
     // Write to backend in background (Firebase or local server)
-    service.completeCheckout(completedTransaction, amountReceived).catch((err) => {
-      console.error('Post-payment update error:', err);
-    });
+    try {
+      console.log(`[POS] Completing checkout in ${config.mode} mode:`, completedTransaction.checkoutCode);
+      await service.completeCheckout(completedTransaction, amountReceived);
+      console.log('[POS] Payment synced successfully to backend');
+    } catch (err) {
+      const errorMsg = err.message || 'Failed to sync payment to backend';
+      console.error('[POS] Post-payment sync error:', errorMsg);
+      setSyncError(errorMsg);
+    }
   };
 
   const handleNextCustomer = () => {
@@ -99,6 +107,7 @@ export default function Home() {
         <TransactionCompleteScreen
           transaction={transaction}
           onNextCustomer={handleNextCustomer}
+          syncError={syncError}
         />
       )}
     </main>
