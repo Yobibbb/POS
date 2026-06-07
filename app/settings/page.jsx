@@ -197,6 +197,29 @@ export default function SettingsPage() {
           </div>
         </section>
 
+        {/* Product Upload Section */}
+        <section className="bg-white border-2 border-gray-300 rounded-xl shadow-sm overflow-hidden">
+          <div className="bg-gray-100 border-b-2 border-gray-300 px-6 py-3">
+            <h2 className="font-bold text-gray-700 uppercase tracking-wider text-sm">
+              Product Management
+            </h2>
+          </div>
+          <div className="p-6">
+            <p className="text-sm text-gray-600 mb-4">
+              Add new products and prices to the system. You can upload individual products or import from a CSV file.
+            </p>
+            <Link
+              href="/products/upload"
+              className="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-6 py-3 rounded-lg text-sm uppercase tracking-wide transition-colors"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+              Upload Products
+            </Link>
+          </div>
+        </section>
+
         {/* Info box */}
         <section className="bg-blue-50 border-2 border-blue-200 rounded-xl px-6 py-5 text-sm text-blue-800 space-y-2">
           <div className="font-bold uppercase tracking-wide">How modes work</div>

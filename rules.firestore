@@ -1,0 +1,51 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Products — POS writes, app reads
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if request.auth.token.email == 'pos@cartalogue.local';
+    }
+
+    // Baskets — app reads/updates basket status
+    match /baskets/{basketId} {
+      allow read, write: if true;
+    }
+
+    // Sessions — app creates and updates its own sessions
+    match /sessions/{sessionId} {
+      allow read, write: if true;
+
+      match /items/{barcode} {
+        allow read, write: if true;
+      }
+
+      match /baskets/{basketId} {
+        allow read, write: if true;
+      }
+    }
+
+    // Checkout codes — app creates, POS updates
+    match /checkoutCodes/{code} {
+      allow read, write: if true;
+    }
+
+    // Transactions — POS writes, app reads
+    match /transactions/{txnId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // Event logs — app writes only
+    match /eventLogs/{logId} {
+      allow read: if false;
+      allow write: if true;
+    }
+
+    // Staff users — admin only
+    match /staffUsers/{userId} {
+      allow read, write: if false;
+    }
+  }
+}

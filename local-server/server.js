@@ -170,6 +170,14 @@ if (productCountRow.count === 0) {
 // ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 /**
+ * GET /health
+ * Health check endpoint (used by POS settings page to verify server is running).
+ */
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok', message: 'CartAlogue Local Server is running' });
+});
+
+/**
  * GET /checkout/:code
  * Fetch checkout details for a specific checkout code.
  */
@@ -212,6 +220,130 @@ app.get('/checkout/:code', (req, res) => {
     });
   } catch (err) {
     console.error('[GET /checkout/:code]', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+/**
+ * POST /api/products/upload
+ * Upload new products to the database.
+ * Accepts an array of products with: name, barcode, price, category (optional), brand (optional)
+ */
+app.post('/api/products/upload', (req, res) => {
+  const { products } = req.body;
+
+  if (!Array.isArray(products) || products.length === 0) {
+    return res.status(400).json({ error: 'Products array is required and cannot be empty' });
+  }
+
+  try {
+    const insert = db.prepare(`
+      INSERT INTO products (id, barcode, name, category, brand, unit_price, is_active)
+      VALUES (:id, :barcode, :name, :category, :brand, :unitPrice, :isActive)
+    `);
+
+    let uploadedCount = 0;
+
+    withTransaction(() => {
+      for (const product of products) {
+        // Validate required fields
+        if (!product.name || !product.barcode || product.price === undefined) {
+          throw new Error('Each product must have name, barcode, and price');
+        }
+
+        if (typeof product.price !== 'number' || product.price <= 0) {
+          throw new Error(`Invalid price for product "${product.name}"`);
+        }
+
+        try {
+          insert.run({
+            id: `PRODUCT-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+            barcode: product.barcode.toString().trim(),
+            name: product.name.toString().trim(),
+            category: (product.category || '').toString().trim(),
+            brand: (product.brand || '').toString().trim(),
+            unitPrice: parseFloat(product.price),
+            isActive: 1,
+          });
+          uploadedCount++;
+        } catch (err) {
+          if (err.message.includes('UNIQUE constraint failed')) {
+            throw new Error(`Barcode "${product.barcode}" already exists in the database`);
+          }
+          throw err;
+        }
+      }
+    });
+
+    res.json({
+      success: true,
+      message: `Successfully uploaded ${uploadedCount} product(s)`,
+      count: uploadedCount,
+    });
+  } catch (err) {
+    console.error('[POST /api/products/upload]', err);
+    res.status(400).json({ error: err.message || 'Failed to upload products' });
+  }
+});
+
+/**
+ * GET /api/products/search?barcode=XXXXX
+ * Search for a product by barcode (used by Flutter app in local mode).
+ */
+app.get('/api/products/search', (req, res) => {
+  const { barcode } = req.query;
+
+  if (!barcode) {
+    return res.status(400).json({ error: 'Barcode query parameter is required' });
+  }
+
+  try {
+    const product = db
+      .prepare('SELECT * FROM products WHERE barcode = ? AND is_active = 1')
+      .get(barcode.toString().trim());
+
+    if (!product) {
+      return res.status(404).json({ error: `Product with barcode "${barcode}" not found` });
+    }
+
+    res.json({
+      id: product.id,
+      name: product.name,
+      barcode: product.barcode,
+      unitPrice: product.unit_price,
+      category: product.category,
+      brand: product.brand,
+      isActive: product.is_active === 1,
+    });
+  } catch (err) {
+    console.error('[GET /api/products/search]', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+/**
+ * GET /api/products
+ * Get all active products (optional, for caching/initial load).
+ */
+app.get('/api/products', (req, res) => {
+  try {
+    const products = db
+      .prepare('SELECT * FROM products WHERE is_active = 1 ORDER BY name ASC')
+      .all();
+
+    res.json({
+      count: products.length,
+      products: products.map(p => ({
+        id: p.id,
+        name: p.name,
+        barcode: p.barcode,
+        unitPrice: p.unit_price,
+        category: p.category,
+        brand: p.brand,
+      })),
+    });
+  } catch (err) {
+    console.error('[GET /api/products]', err);
     res.status(500).json({ error: 'Server error' });
   }
 });

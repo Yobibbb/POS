@@ -7,6 +7,8 @@ import {
   useEffect,
   useRef,
 } from 'react';
+import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
+import { getAuth } from 'firebase/auth';
 import { getConfig, saveConfig } from '@/lib/config';
 import { FirebaseCheckoutService } from '@/lib/services/FirebaseCheckoutService';
 import { LocalCheckoutService } from '@/lib/services/LocalCheckoutService';
@@ -25,6 +27,39 @@ export function ModeProvider({ children }) {
 
   // Activate background sync: auto-syncs local history to Firebase on internet reconnect
   useSyncHistory();
+
+  // Auto-login in Online mode with POS credentials
+  useEffect(() => {
+    if (!isClient || config.mode !== 'online') return;
+
+    const autoLoginPOS = async () => {
+      try {
+        const auth = getAuth();
+        const email = process.env.NEXT_PUBLIC_FIREBASE_POS_EMAIL;
+        const password = process.env.NEXT_PUBLIC_FIREBASE_POS_PASSWORD;
+
+        if (!email || !password) {
+          console.warn('[POS] Auto-login credentials not configured. Skipping auto-login.');
+          return;
+        }
+
+        // Check if already authenticated
+        if (auth.currentUser) {
+          console.log('[POS] Already authenticated as:', auth.currentUser.email);
+          return;
+        }
+
+        console.log('[POS] Auto-logging in as POS user...');
+        await signInWithEmailAndPassword(auth, email, password);
+        console.log('[POS] ✓ Auto-login successful. Now you can upload products.');
+      } catch (err) {
+        console.error('[POS] Auto-login failed:', err.message);
+        // Silently fail - user can still use checkout features
+      }
+    };
+
+    autoLoginPOS();
+  }, [isClient, config.mode]);
 
   // Hydrate config from localStorage once on client
   useEffect(() => {
